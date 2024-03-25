@@ -38,7 +38,7 @@ void RunGame()
 
     textDisplayer.FirstInstuctions();
 
-    string[] allCenters = hexCenters.Keys.ToArray();
+	var allCenters = hexCenters.Keys.ToArray();
 
     for (int i = 0; i < allCenters.Length; i++)
     {
@@ -47,7 +47,7 @@ void RunGame()
         var submission = Console.ReadLine();
         if (submission == null)
         {
-            i = i - 1;
+			i--;
             continue;
         }
         submission = submission.Trim();
@@ -59,12 +59,12 @@ void RunGame()
                 i = -1;
                 continue;
             }
-            i = i - 2;
+			i -= 2;
             continue;
         }
-        if (hexNumSubmissionValidator(submission) == false)
+        if (!hexNumSubmissionValidator(submission))
         {
-            i = i - 1;
+            i--;
             continue;
         }
         hexCenters[allCenters[i]][0] = int.Parse(submission);
@@ -84,51 +84,52 @@ void RunGame()
         }
         else
         {
-            i = i - 1; continue;
+			i--; 
+            continue;
         }
 
     }
     ////// Editing Mode /////////
     if (response == "wrong")
     {
-        bool doneCorrecting = false;
+        var doneCorrecting = false;
         Console.WriteLine("Please enter the location of the incorrect number:");
         boardDisplayer.DisplayCenters(hexCenters, true);
         while (doneCorrecting == false)
         {
 
             Console.WriteLine("Location examples include A1, B3 etc..");
-            string correctionSpot = "";
-            correctionSpot = Console.ReadLine().Trim();
+            var correctionSpot = Console.ReadLine()?.Trim();
 
             ///// Handle edit input /////////
             if (allCenters.Contains(correctionSpot) == false)
             {
                 continue;
             }
-            if (allCenters.Contains(correctionSpot) == true)
+            if (allCenters.Contains(correctionSpot))
             {
-                bool doneEditing = false;
+                var doneEditing = false;
                 while (doneEditing == false)
                 {
                     Console.WriteLine($"What do you want to change {correctionSpot} to be?");
-                    string newSubmission = Console.ReadLine();
-                    if (hexNumSubmissionValidator(newSubmission) == false)
+                    var newSubmission = Console.ReadLine() ?? ""; //TODO: default to empty string?
+                    if (!hexNumSubmissionValidator(newSubmission))
                     {
                         continue;
                     }
-                    if (hexNumSubmissionValidator(newSubmission) == true)
+                    if (!hexNumSubmissionValidator(newSubmission))
                     {
+                        //TODO - type of correctionSpot == 'string?' - consider enum?
                         hexCenters[correctionSpot][0] = int.Parse(newSubmission);
                         Console.WriteLine("");
                         boardDisplayer.DisplayCenters(hexCenters, true);
                         Console.WriteLine("Do you want to edit another space?");
 
-                        bool stillEditting = true;
+                        var stillEditting = true;
                         while (stillEditting == true)
                         {
                             Console.WriteLine("Please enter 'yes' or 'no'");
-                            string aSub = Console.ReadLine().Trim();
+                            var aSub = Console.ReadLine()?.Trim();
 
                             if (aSub != "yes" && aSub != "no")
                             {
@@ -159,7 +160,7 @@ void RunGame()
     Console.WriteLine("Here is your completed board");
     boardDisplayer.DisplayCenters(hexCenters, false);
     Console.WriteLine();
-    GameBoard gameboard = new GameBoard(hexCenters);
+    var gameboard = new GameBoard(hexCenters);
     Console.WriteLine();
     Console.WriteLine("Here are your probabilites for each settlement spot:");
     Console.WriteLine();
@@ -170,7 +171,7 @@ void RunGame()
 
 
 
-    bool hexNumSubmissionValidator(string sub)
+    bool hexNumSubmissionValidator(string? sub)
     {
         int numSub = 0;
 
